@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Silkscreen&display=swap');
+
+body {
+    font-family: 'Silkscreen';
+    background-color: #0F3460;
+}
+
+#secleccionar-personaje {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.titulo {
+color: white;
+font-size: 50px;
+}
+.subtitulo {
+color: whitesmoke;
+font-size: 40px;
+}
+
+.tarjetas, .tarjetas-ataques {
+    display: flex;
+    gap: 17px;
+}
+
+.tarjeta-de-mokepon {
+    width: 289px;
+    height: 395px;
+    background: #C8DBBE;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 15px;
+    display: flex;
+    color: #78938A;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column-reverse;
+}
+
+.tarjeta-de-mokepon img {
+    width: 180px;
+}
+
+#boton-personaje {
+    width: 900;
+    height: 900;
+    border-radius: 16px;
+    background: transparent;
+    border: 3px solid white;
+    color: white;
+    font-family: 'Abril Fatface';
+    margin-top: 25px;
+}
+
+input {
+    display: none;
+}
+
+input:checked + label {
+    background: #829460;
+}
+
+#seleccionar-ataque {
+    flex-direction: column;
+    align-items: center;
+}
+
+.boton-de-ataque {
+    background: #23892d;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 15px;
+    border-color: transparent;
+    width: 150px;
+    color: white;
+    font-family: 'Abril Fatface';
+}
+
+#Mensajes {
+    width: 250px;
+    background: #4C6793;
+    padding: 10px;
+    margin-top: 18px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+#boton-reiniciar {
+    border: transparent;
+    color: #700614;
+    font-family: 'Abril Fatface';
+}
+
+.ataques {
+    display: grid;
+    grid-template-columns: 150px 150px;
+    color: white;
+}
+ 
+#vidas-jugador, #vidas-enemigo {
+    font-size: 38px;
+    border-bottom: 1px;
+}
+
+.ataques-jugador, .ataques-enemigo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+@media (max-width: 360px) {
+    .tarjetas, .tarjetas-ataques {
+        flex-direction: column;
+    }
+}
