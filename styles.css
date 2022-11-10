@@ -26,7 +26,7 @@ font-size: 40px;
     gap: 17px;
 }
 
-.tarjeta-de-mokepon {
+.tarjeta-de-kimetsu {
     width: 289px;
     height: 395px;
     background: #C8DBBE;
@@ -40,7 +40,7 @@ font-size: 40px;
     flex-direction: column-reverse;
 }
 
-.tarjeta-de-mokepon img {
+.tarjeta-de-kimetsu img {
     width: 180px;
 }
 

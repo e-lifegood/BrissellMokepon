@@ -6,8 +6,8 @@ sectionReiniciar.style.display = "none"
 
 const sectionSeleccionarPersonaje = document.getElementById("secleccionar-personaje")
 
-let spanpersonajeJugador = document.getElementById("personaje-jugador")
-let spanPersonajeEnemigo = document.getElementById("personaje-enemigo")
+const spanPersonajeEnemigo = document.getElementById("personaje-enemigo")
+const spanpersonajeJugador = document.getElementById("personaje-jugador")
 const spanVidasJugador = document.getElementById("vidas-jugador")
 const spanVidasEnemigos = document.getElementById("vidas-enemigo")
 
@@ -51,7 +51,7 @@ tanjiro.ataques.push(
     { nombre: '💧', id: 'boton-agua' },
     { nombre: '💧', id: 'boton-agua' },
     { nombre: '💧', id: 'boton-agua' },
-    { nombre: '🔥', id: '"boton-fuego' },
+    { nombre: '🔥', id: 'boton-fuego' },
     { nombre: '🌱', id: 'boton-tierra' }
 )
 
@@ -74,14 +74,15 @@ zenitsu.ataques.push(
 kimetsuyis.push(tanjiro,inosuke,zenitsu)
 
 function iniciarJuego() {    
+
     sectionSeleccionarAtaque.style.display = "none"
 
-    kimetsuyis.forEach( (Kimetsu) => {
+    kimetsuyis.forEach((kimetsu) => {
         opcionDekimetsuyis = `
-        <input type="radio" name="personaje" id=${Kimetsu.nombre} />
-        <label class="tarjeta-de-mokepon" for=${Kimetsu.nombre}>
-            <p>${Kimetsu.nombre}</p>
-            <img src=${Kimetsu.foto} alt=${Kimetsu.nombre}>
+        <input type="radio" name="personaje" id=${kimetsu.nombre} />
+        <label class="tarjeta-de-kimetsu" for=${kimetsu.nombre}>
+            <p>${kimetsu.nombre}</p>
+            <img src=${kimetsu.foto} alt=${kimetsu.nombre}>
         </label>
         `
         contenedorTarjetas.innerHTML += opcionDekimetsuyis
@@ -92,22 +93,22 @@ function iniciarJuego() {
     })
 
     botonPersonajeJugador.addEventListener("click", seleccionarPersonajeJugador)    
-    console.log (seleccionarPersonajeJugador) 
     
     botonReiniciar.addEventListener("click", reiniciarJuego)
 }
 
 function seleccionarPersonajeJugador() {    
+
     sectionSeleccionarPersonaje.style.display = "none"
 
     sectionSeleccionarAtaque.style.display = "flex"
 
     if (inpuntTanjiro.checked) {
-        spanpersonajeJugador = document.getElementById("personaje-jugador").innerHTML = inpuntTanjiro.id
+        spanpersonajeJugador.innerHTML = inpuntTanjiro.id
         prsnJugador = inpuntTanjiro.id
     }
     else if (inputInosuke.checked) {
-        spanpersonajeJugador = document.getElementById("personaje-jugador").innerHTML = inputInosuke.id
+        spanpersonajeJugador.innerHTML = inputInosuke.id
         prsnJugador = inputInosuke.id
     }
     else if (inputZenitsu.checked) {
@@ -127,35 +128,33 @@ function extraerAtaques(prsnJugador) {
     let ataques 
     for (let i = 0; i < kimetsuyis.length; i++) {
         if (prsnJugador === kimetsuyis[i].nombre) {
-                ataques = kimetsuyis[i].ataques
+            ataques = kimetsuyis[i].ataques
         }
     }
     mostrarataques(ataques)
 }
 
-
-function  mostrarataques(ataques) {
-    ataques.forEach((ataque) => {
+function mostrarataques(ataques) {
+    ataques.forEach((ataques) => {
         ataquesKimetsuyis = `
-        <button id=${ataque.id} class="boton-de-ataque">${ataque.nombre}</button>
+        <button id=${ataques.id} class="boton-de-ataque">${ataques.nombre}</button>
         `
         contenedorAtaques.innerHTML += ataquesKimetsuyis
-    })
+    }) 
 
     botonTierra = document.getElementById("boton-tierra")
     botonAgua = document.getElementById("boton-agua")
     botonFuego = document.getElementById("boton-fuego")
-    
 
     botonFuego.addEventListener("click", ataqueFuego)    
 
     botonAgua.addEventListener("click", ataqueAgua) 
     
-    botonTierra.addEventListener("click", ataqueTierra) 
+    botonTierra.addEventListener("click", ataqueTierra)
 }
-
+    
 function seleccionarPersonajeEnemigo() {
-    let personajeAleatorio = aleatorio(1,3)
+    let personajeAleatorio = aleatorio(0, kimetsuyis.length -1)
             
     spanPersonajeEnemigo.innerHTML = kimetsuyis[personajeAleatorio].nombre
 }
