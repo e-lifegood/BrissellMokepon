@@ -1,16 +1,13 @@
-const sectionReiniciar = document.getElementById("reiniciar")
 const sectionSeleccionarAtaque = document.getElementById("seleccionar-ataque")
+const sectionReiniciar = document.getElementById("reiniciar")
 const botonPersonajeJugador = document.getElementById("boton-personaje")
-const botonTierra = document.getElementById("boton-tierra")
-const botonAgua = document.getElementById("boton-agua")
-const botonFuego = document.getElementById("boton-fuego")
 const botonReiniciar = document.getElementById("boton-reiniciar")
+sectionReiniciar.style.display = "none"
 
 const sectionSeleccionarPersonaje = document.getElementById("secleccionar-personaje")
-const spanpersonajeJugador = document.getElementById("personaje-jugador")
 
-const spanPersonajeEnemigo = document.getElementById("personaje-enemigo")
-
+let spanpersonajeJugador = document.getElementById("personaje-jugador")
+let spanPersonajeEnemigo = document.getElementById("personaje-enemigo")
 const spanVidasJugador = document.getElementById("vidas-jugador")
 const spanVidasEnemigos = document.getElementById("vidas-enemigo")
 
@@ -29,6 +26,9 @@ let inputInosuke
 let inputZenitsu
 let prsnJugador
 let ataquesKimetsuyis
+let botonTierra
+let botonAgua 
+let botonFuego 
 let vidasJugador = 3
 let vidasEnemigo = 3
 
@@ -60,13 +60,13 @@ inosuke.ataques.push(
     { nombre: '🌱', id: 'boton-tierra' },
     { nombre: '🌱', id: 'boton-tierra' },
     { nombre: '💧', id: 'boton-agua' },
-    { nombre: '🔥', id: '"boton-fuego' },
+    { nombre: '🔥', id: 'boton-fuego' },
 )
 
 zenitsu.ataques.push(
-    { nombre: '🔥', id: '"boton-fuego' },
-    { nombre: '🔥', id: '"boton-fuego' },
-    { nombre: '🔥', id: '"boton-fuego' },
+    { nombre: '🔥', id: 'boton-fuego' },
+    { nombre: '🔥', id: 'boton-fuego' },
+    { nombre: '🔥', id: 'boton-fuego' },
     { nombre: '💧', id: 'boton-agua' },
     { nombre: '🌱', id: 'boton-tierra' },
 )
@@ -76,7 +76,7 @@ kimetsuyis.push(tanjiro,inosuke,zenitsu)
 function iniciarJuego() {    
     sectionSeleccionarAtaque.style.display = "none"
 
-    kimetsuyis.forEach((Kimetsu) => {
+    kimetsuyis.forEach( (Kimetsu) => {
         opcionDekimetsuyis = `
         <input type="radio" name="personaje" id=${Kimetsu.nombre} />
         <label class="tarjeta-de-mokepon" for=${Kimetsu.nombre}>
@@ -94,14 +94,7 @@ function iniciarJuego() {
     botonPersonajeJugador.addEventListener("click", seleccionarPersonajeJugador)    
     console.log (seleccionarPersonajeJugador) 
     
-    botonFuego.addEventListener("click", ataqueFuego)    
-
-    botonAgua.addEventListener("click", ataqueAgua) 
-    
-    botonTierra.addEventListener("click", ataqueTierra) 
-    
     botonReiniciar.addEventListener("click", reiniciarJuego)
-
 }
 
 function seleccionarPersonajeJugador() {    
@@ -123,37 +116,48 @@ function seleccionarPersonajeJugador() {
     }
     else {
         alert("Selecciona un personaje")
-
-        extraerAtaques(prsnJugador)
-        seleccionarPersonajeEnemigo()
+        return false;
     }
+
+    extraerAtaques(prsnJugador)
+    seleccionarPersonajeEnemigo()
+}
 
 function extraerAtaques(prsnJugador) {
     let ataques 
     for (let i = 0; i < kimetsuyis.length; i++) {
         if (prsnJugador === kimetsuyis[i].nombre) {
-                ataques = kimetsuyis[i].nombre
+                ataques = kimetsuyis[i].ataques
         }
     }
     mostrarataques(ataques)
 }
 
-}
-       
+
 function  mostrarataques(ataques) {
     ataques.forEach((ataque) => {
         ataquesKimetsuyis = `
-        <button id=${ataques.id} class="boton-de-ataque">${ataque.nombre}</button>
+        <button id=${ataque.id} class="boton-de-ataque">${ataque.nombre}</button>
         `
+        contenedorAtaques.innerHTML += ataquesKimetsuyis
     })
-}
 
+    botonTierra = document.getElementById("boton-tierra")
+    botonAgua = document.getElementById("boton-agua")
+    botonFuego = document.getElementById("boton-fuego")
     
+
+    botonFuego.addEventListener("click", ataqueFuego)    
+
+    botonAgua.addEventListener("click", ataqueAgua) 
+    
+    botonTierra.addEventListener("click", ataqueTierra) 
+}
 
 function seleccionarPersonajeEnemigo() {
     let personajeAleatorio = aleatorio(1,3)
             
-    spanPersonajeEnemigo.innerHTML = kimetsuyis[personajeAleatorio]
+    spanPersonajeEnemigo.innerHTML = kimetsuyis[personajeAleatorio].nombre
 }
 
 function ataqueFuego() {
