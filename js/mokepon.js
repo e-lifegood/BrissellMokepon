@@ -29,6 +29,8 @@ let ataquesKimetsuyis
 let botonTierra
 let botonAgua 
 let botonFuego 
+let ataquePersonaje = []
+let botones = []
 let vidasJugador = 3
 let vidasEnemigo = 3
 
@@ -131,13 +133,13 @@ function extraerAtaques(prsnJugador) {
             ataques = kimetsuyis[i].ataques
         }
     }
-    mostrarataques(ataques)
+    mostrarAtaques(ataques)
 }
 
-function mostrarataques(ataques) {
+function mostrarAtaques(ataques) {
     ataques.forEach((ataques) => {
         ataquesKimetsuyis = `
-        <button id=${ataques.id} class="boton-de-ataque">${ataques.nombre}</button>
+        <button id=${ataques.id} class="boton-de-ataque BAtaque">${ataques.nombre}</button>
         `
         contenedorAtaques.innerHTML += ataquesKimetsuyis
     }) 
@@ -145,31 +147,41 @@ function mostrarataques(ataques) {
     botonTierra = document.getElementById("boton-tierra")
     botonAgua = document.getElementById("boton-agua")
     botonFuego = document.getElementById("boton-fuego")
+    botones = document.querySelectorAll(".BAtaque")
 
+    
     botonFuego.addEventListener("click", ataqueFuego)    
 
     botonAgua.addEventListener("click", ataqueAgua) 
     
     botonTierra.addEventListener("click", ataqueTierra)
 }
+
+function secuenciaAtaque() {
+    botones.forEach((boton) => {
+        boton.addEventListener("click", (e) => {
+            if (e.target.textContent === "🔥") {
+                ataquePersonaje.push("FUEGO")
+                console.log(ataquePersonaje)
+                boton.style.background = "#6D9886"
+            } else if (e.target.textContent === "💧") {
+                ataquePersonaje.push("AGUA")
+                console.log(ataquePersonaje)
+                boton.style.background = "#6D9886"
+            } else {
+                ataquePersonaje.push("TIERRA")
+                console.log(ataquePersonaje)
+                boton.style.background = "#6D9886"
+            }
+        })
+    })
+}
     
 function seleccionarPersonajeEnemigo() {
     let personajeAleatorio = aleatorio(0, kimetsuyis.length -1)
-            
-    spanPersonajeEnemigo.innerHTML = kimetsuyis[personajeAleatorio].nombre
-}
 
-function ataqueFuego() {
-    ataqueJugador = "FUEGO"
-    ataqueAleatorioEnemigo()
-}
-function ataqueAgua() {
-    ataqueJugador = "AGUA"
-    ataqueAleatorioEnemigo()
-}
-function ataqueTierra() {
-    ataqueJugador = "TIERRA"
-    ataqueAleatorioEnemigo()
+    spanPersonajeEnemigo.innerHTML = kimetsuyis[personajeAleatorio].nombre
+    secuenciaAtaque()
 }
 
 function ataqueAleatorioEnemigo() {
