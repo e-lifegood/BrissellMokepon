@@ -18,19 +18,23 @@ const contenedorTarjetas = document.getElementById("contenedorTarjetas")
 const contenedorAtaques = document.getElementById("contenedorAtaques")
 
 let kimetsuyis = []
-let ataqueJugador
-let ataqueEnemigo
+let ataqueJugador = []
+let ataqueEnemigo = []
 let opcionDekimetsuyis
 let inpuntTanjiro
 let inputInosuke
 let inputZenitsu
 let prsnJugador
 let ataquesKimetsuyis
+let ataquesKimetsuyiEnemigo
 let botonTierra
 let botonAgua 
 let botonFuego 
-let ataquePersonaje = []
 let botones = []
+let indexAtaqueJugador
+let indexAtaqueEnemigo
+let victoriasJugador = 0
+let victoriasEnemigo = 0
 let vidasJugador = 3
 let vidasEnemigo = 3
 
@@ -161,18 +165,22 @@ function secuenciaAtaque() {
     botones.forEach((boton) => {
         boton.addEventListener("click", (e) => {
             if (e.target.textContent === "🔥") {
-                ataquePersonaje.push("FUEGO")
-                console.log(ataquePersonaje)
+                ataqueJugador.push("FUEGO")
+                console.log(ataqueJugador)
                 boton.style.background = "#6D9886"
+                botonFuego.disabled = true
             } else if (e.target.textContent === "💧") {
-                ataquePersonaje.push("AGUA")
-                console.log(ataquePersonaje)
+                ataqueJugador.push("AGUA")
+                console.log(ataqueJugador)
                 boton.style.background = "#6D9886"
+                botonFuego.disabled = true
             } else {
-                ataquePersonaje.push("TIERRA")
-                console.log(ataquePersonaje)
+                ataqueJugador.push("TIERRA")
+                console.log(ataqueJugador)
                 boton.style.background = "#6D9886"
+                botonFuego.disabled = true
             }
+            ataqueAleatorioEnemigo()
         })
     })
 }
@@ -181,60 +189,77 @@ function seleccionarPersonajeEnemigo() {
     let personajeAleatorio = aleatorio(0, kimetsuyis.length -1)
 
     spanPersonajeEnemigo.innerHTML = kimetsuyis[personajeAleatorio].nombre
+    ataquesKimetsuyiEnemigo = kimetsuyis[personajeAleatorio].nombre
     secuenciaAtaque()
 }
 
 function ataqueAleatorioEnemigo() {
-    let ataqueAleatorio = aleatorio(1,3)
+    let ataqueAleatorio = aleatorio(0, ataquesKimetsuyiEnemigo.length -1)
 
-    if (ataqueAleatorio == 1) {
-        ataqueEnemigo = "FUEGO"
+    if (ataqueAleatorio == 0 || ataqueAleatorio == 1) {
+        ataqueEnemigo.push("FUEGO")
     }
-    else if (ataqueAleatorio == 2) {
-        ataqueEnemigo = "AGUA"
+    else if (ataqueAleatorio == 3 || ataqueAleatorio == 4) {
+        ataqueEnemigo.push("AGUA")
     }
     else {
-        ataqueEnemigo = "TIERRA"
+        ataqueEnemigo.push("TIERRA")
     }
 
-    combate()
+    iniciarPelea()
+}
+
+function iniciarPelea() {
+    if (ataqueJugador.length === 5) {
+        combate()
+    }
+}
+
+function indexAmbosOponentes(jugador, enemigo) {
+    indexAtaqueJugador = ataqueJugador[jugador]
+    indexAtaqueEnemigo = ataqueEnemigo[enemigo]
 }
 
 function combate() {   
     
-    if(ataqueEnemigo === ataqueJugador) {
-        crearMensaje("EMPATE")
-    }
-    else if(ataqueJugador === "FUEGO" && ataqueEnemigo === "TIERRA") {
-        crearMensaje("GANASTE")
-        vidasEnemigo-- 
-        spanVidasEnemigos.innerHTML = vidasEnemigo
-    }
-    else if(ataqueJugador === "AGUA" && ataqueEnemigo === "FUEGO") {
-        crearMensaje("GANASTE")
-        vidasEnemigo-- 
-        spanVidasEnemigos.innerHTML = vidasEnemigo
-    }
-    else if(ataqueJugador === "TIERRA" && ataqueEnemigo === "AGUA") {
-        crearMensaje("GANASTE")
-        vidasEnemigo-- 
-        spanVidasEnemigos.innerHTML = vidasEnemigo
-    } 
-    else {
-        crearMensaje("PERDISTE")
-        vidasJugador-- 
-        spanVidasJugador.innerHTML = vidasJugador
+    for (let index = 0; index < ataqueJugador.length; index++) {
+        if(ataqueJugador[index] === ataqueEnemigo[index]) {
+            indexAmbosOponentes(index, index)
+            crearMensaje("EMPATE")
+        } else if (ataqueJugador[index] === "FUEGO" && ataqueEnemigo[index] === "TIERRA") {
+            indexAmbosOponentes(index, index)
+            crearMensaje("GANASTE")
+            victoriasJugador++
+            spanVidasJugador.innerHTML  = victoriasJugador
+        } else if (ataqueJugador[index] === "AGUA" && ataqueEnemigo[index] === "FUEGO") {
+            indexAmbosOponentes(index, index)
+            crearMensaje("GANASTE")
+            victoriasJugador++
+            spanVidasJugador.innerHTML  = victoriasJugador
+        } else if (ataqueJugador[index] === "TIERRA" && ataqueEnemigo[index] === "AGUA") {
+            indexAmbosOponentes(index, index)
+            crearMensaje("GANASTE")
+            victoriasJugador++
+            spanVidasJugador.innerHTML  = victoriasJugador 
+        } else {
+            indexAmbosOponentes(index, index)
+            crearMensaje("PERDISTE")
+            victoriasEnemigo++
+            spanVidasEnemigos.innerHTML = victoriasEnemigo
+        }
     }
 
-    Revisarvidas()
+    RevisarVictorias()
 }
 
-function Revisarvidas() {
-    if (vidasEnemigo === 0) {
-        crearMensajeFinal("FELICITACIONES! Ganaste 🤪")
+function RevisarVictorias() {
+    if (victoriasJugador === victoriasEnemigo) {
+        crearMensajeFinal("ESTO FUE UN EMPATE👺!!!")
     }
-    else if (vidasJugador === 0) {
-        crearMensajeFinal("Lo siento, perdistes ☹️")
+    else if (vidasJugador > victoriasEnemigo) {
+        crearMensajeFinal("BUENA JUGADA, GANASTE👌")
+    } else {
+        crearMensajeFinal("MALAS ELEGIDAS, PERDISTE😑")
     }
 }
 
@@ -244,8 +269,8 @@ function crearMensaje(resultado) {
         let nuevoAtaqueDelEnemigo = document.createElement("p")
 
         sectionMensajes.innerHTML = resultado
-        nuevoAtaqueDelJugador.innerHTML = ataqueJugador
-        nuevoAtaqueDelEnemigo.innerHTML = ataqueEnemigo
+        nuevoAtaqueDelJugador.innerHTML = indexAtaqueJugador
+        nuevoAtaqueDelEnemigo.innerHTML = indexAtaqueEnemigo
 
         //let parrafo = document.createElement("p")
         //parrafo.innerHTML = "Tu personaje atacó con " + ataqueJugador + ", el personaje del enemigo atacó con " + ataqueEnemigo + "- " + resultado
@@ -256,13 +281,7 @@ function crearMensaje(resultado) {
 
 function crearMensajeFinal(resultadoFinal) {
     sectionMensajes.innerHTML =  resultadoFinal
-    
-    botonFuego.disabled = true
 
-    botonAgua.disabled = true
-    
-    botonTierra.disabled = true
-   
     sectionReiniciar.style.display = "block"
 }
 
