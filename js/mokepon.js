@@ -17,6 +17,9 @@ const ataqueDelEnemigo = document.getElementById("ataque-del-enemigo")
 const contenedorTarjetas = document.getElementById("contenedorTarjetas")
 const contenedorAtaques = document.getElementById("contenedorAtaques")
 
+const sectionVerMapa = document.getElementById("ver-mapa")
+const mapa = document.getElementById("mapa")
+
 let kimetsuyis = []
 let ataqueJugador = []
 let ataqueEnemigo = []
@@ -37,6 +40,8 @@ let victoriasJugador = 0
 let victoriasEnemigo = 0
 let vidasJugador = 3
 let vidasEnemigo = 3
+let lienzo = mapa.getContext("2d")
+let intervalo 
 
 class Kimetsu {
     constructor(nombre, foto, vida) {
@@ -44,6 +49,14 @@ class Kimetsu {
         this.foto = foto
         this.vida = vida
         this.ataques = []
+        this.x = 20
+        this.y = 30
+        this.ancho = 80
+        this.alto = 80
+        this.mapaFoto = new Image()
+        this.mapaFoto.src = foto
+        this.velocidadX = 0
+        this.velocidadY = 0
     }
 }
 
@@ -82,6 +95,7 @@ kimetsuyis.push(tanjiro,inosuke,zenitsu)
 function iniciarJuego() {    
 
     sectionSeleccionarAtaque.style.display = "none"
+    sectionVerMapa.style.display = "none"
 
     kimetsuyis.forEach((kimetsu) => {
         opcionDekimetsuyis = `
@@ -107,7 +121,9 @@ function seleccionarPersonajeJugador() {
 
     sectionSeleccionarPersonaje.style.display = "none"
 
-    sectionSeleccionarAtaque.style.display = "flex"
+    //sectionSeleccionarAtaque.style.display = "flex"
+    sectionVerMapa.style.display = "flex"
+    iniciarMapa()
 
     if (inpuntTanjiro.checked) {
         spanpersonajeJugador.innerHTML = inpuntTanjiro.id
@@ -153,12 +169,11 @@ function mostrarAtaques(ataques) {
     botonFuego = document.getElementById("boton-fuego")
     botones = document.querySelectorAll(".BAtaque")
 
+    botonTierra.addEventListener("click", secuenciaAtaque)
     
-    botonFuego.addEventListener("click", ataqueFuego)    
+    botonAgua.addEventListener("click", secuenciaAtaque) 
 
-    botonAgua.addEventListener("click", ataqueAgua) 
-    
-    botonTierra.addEventListener("click", ataqueTierra)
+    botonFuego.addEventListener("click", secuenciaAtaque)    
 }
 
 function secuenciaAtaque() {
@@ -293,5 +308,68 @@ function aleatorio(min, max) {
     return  Math.floor(Math.random() * (max - min + 1) + min) 
 }
 
+function pintarPersonaje() {
+    tanjiro.x = tanjiro.x + tanjiro.velocidadX
+    tanjiro.y = tanjiro.y + tanjiro.velocidadY
+    lienzo.clearRect(0, 0, mapa.width, mapa.height)
+    lienzo.drawImage(
+        tanjiro.mapaFoto,
+        tanjiro.x,
+        tanjiro.y,
+        tanjiro.ancho,
+        tanjiro.alto
+    )
+}
+
+function moverDerecha() {
+    tanjiro.velocidadX = 4
+}
+
+function moverIzquierda() {
+    tanjiro.velocidadX = -4
+}
+
+function moverAbajo() {
+    tanjiro.velocidadY = 4
+}
+
+function moverArriba() {
+    tanjiro.velocidadY = -4
+}
+
+function detenerMovimiento() {
+    tanjiro.velocidadX = 0
+    tanjiro.velocidadY = 0
+}
+
+function presionDeTecla(event) {
+    switch (event.key) {
+        case "ArrowUp":
+            moverArriba()
+            break
+        case "ArrowDown": 
+            moverAbajo()
+            break
+
+        case "ArrowLeft":
+            moverIzquierda()
+            break
+        
+        case "ArrowRight":
+            moverDerecha()
+            break
+
+        default:
+            break;
+    }
+}
+
+function iniciarMapa() {
+    intervalo = setInterval(pintarPersonaje, 50)
+
+    window.addEventListener("keydown", presionDeTecla)
+
+    window.addEventListener("keyup", detenerMovimiento)
+}
 
 window.addEventListener("load", iniciarJuego)
