@@ -28,6 +28,7 @@ let inpuntTanjiro
 let inputInosuke
 let inputZenitsu
 let prsnJugador
+let personajeDelJugador
 let ataquesKimetsuyis
 let ataquesKimetsuyiEnemigo
 let botonTierra
@@ -42,21 +43,33 @@ let vidasJugador = 3
 let vidasEnemigo = 3
 let lienzo = mapa.getContext("2d")
 let intervalo 
+let mapaBackground = new Image() 
+mapaBackground.src = "../assets/mapa.jpg"
 
 class Kimetsu {
-    constructor(nombre, foto, vida) {
+    constructor(nombre, foto, vida, fotoMapa, x = 10, y = 10) {
         this.nombre = nombre
         this.foto = foto
         this.vida = vida
         this.ataques = []
-        this.x = 20
-        this.y = 30
-        this.ancho = 80
-        this.alto = 80
+        this.x = x
+        this.y = y
+        this.ancho = 30
+        this.alto = 30
         this.mapaFoto = new Image()
-        this.mapaFoto.src = foto
+        this.mapaFoto.src = fotoMapa
         this.velocidadX = 0
         this.velocidadY = 0
+    }
+
+    pintarKimetsuyi() {
+        lienzo.drawImage(
+            this.mapaFoto,
+            this.x,
+            this.y,
+            this.ancho,
+            this.alto
+        )
     }
 }
 
@@ -65,6 +78,12 @@ let tanjiro = new Kimetsu('Tanjiro', './assets/2tanjiro.jpg', 5)
 let inosuke = new Kimetsu('Inosuke', './assets/inosuke.jpg', 5)
 
 let zenitsu = new Kimetsu('Zenitsu', './assets/zenitsu.jpg', 5)
+
+let tanjiroEnemigo = new Kimetsu('Tanjiro', './assets/2tanjiro.jpg', 5, 80, 120)
+
+let inosukeEnemigo = new Kimetsu('Inosuke', './assets/inosuke.jpg', 5, 160, 95)
+
+let zenitsuEnemigo = new Kimetsu('Zenitsu', './assets/zenitsu.jpg', 5, 200, 190)
 
 tanjiro.ataques.push(
     { nombre: '💧', id: 'boton-agua' },
@@ -122,8 +141,6 @@ function seleccionarPersonajeJugador() {
     sectionSeleccionarPersonaje.style.display = "none"
 
     //sectionSeleccionarAtaque.style.display = "flex"
-    sectionVerMapa.style.display = "flex"
-    iniciarMapa()
 
     if (inpuntTanjiro.checked) {
         spanpersonajeJugador.innerHTML = inpuntTanjiro.id
@@ -143,6 +160,8 @@ function seleccionarPersonajeJugador() {
     }
 
     extraerAtaques(prsnJugador)
+    sectionVerMapa.style.display = "flex"
+    iniciarMapa()
     seleccionarPersonajeEnemigo()
 }
 
@@ -308,38 +327,42 @@ function aleatorio(min, max) {
     return  Math.floor(Math.random() * (max - min + 1) + min) 
 }
 
-function pintarPersonaje() {
-    tanjiro.x = tanjiro.x + tanjiro.velocidadX
-    tanjiro.y = tanjiro.y + tanjiro.velocidadY
+function pintarCanva() {
+    personajeDelJugador.x = personajeDelJugador.x + personajeDelJugador.velocidadX
+    personajeDelJugador.y = personajeDelJugador.y + personajeDelJugador.velocidadY
     lienzo.clearRect(0, 0, mapa.width, mapa.height)
     lienzo.drawImage(
-        tanjiro.mapaFoto,
-        tanjiro.x,
-        tanjiro.y,
-        tanjiro.ancho,
-        tanjiro.alto
+       mapaBackground,
+       0,
+       0,
+       mapa.width,
+       mapa.height
     )
+    personajeDelJugador.pintarKimetsuyi()
+    tanjiroEnemigo.pintarKimetsuyi()
+    zenitsuEnemigo.pintarKimetsuyi()
+    inosukeEnemigo.pintarKimetsuyi()
 }
 
 function moverDerecha() {
-    tanjiro.velocidadX = 4
+    personajeDelJugador.velocidadX = 4
 }
 
 function moverIzquierda() {
-    tanjiro.velocidadX = -4
+    personajeDelJugador.velocidadX = -4
 }
 
 function moverAbajo() {
-    tanjiro.velocidadY = 4
+    personajeDelJugador.velocidadY = 4
 }
 
 function moverArriba() {
-    tanjiro.velocidadY = -4
+    personajeDelJugador.velocidadY = -4
 }
 
 function detenerMovimiento() {
-    tanjiro.velocidadX = 0
-    tanjiro.velocidadY = 0
+    personajeDelJugador.velocidadX = 0
+    personajeDelJugador.velocidadY = 0
 }
 
 function presionDeTecla(event) {
@@ -365,11 +388,20 @@ function presionDeTecla(event) {
 }
 
 function iniciarMapa() {
-    intervalo = setInterval(pintarPersonaje, 50)
+    personajeDelJugador = obtenerPersonaje(prsnJugador)
+    intervalo = setInterval(pintarCanva, 50)
 
     window.addEventListener("keydown", presionDeTecla)
 
     window.addEventListener("keyup", detenerMovimiento)
+}
+
+function obtenerPersonaje() {
+    for (let i = 0; i < kimetsuyis.length; i++) {
+        if (prsnJugador === kimetsuyis[i].nombre) {
+            return kimetsuyis[i]
+        }
+    }
 }
 
 window.addEventListener("load", iniciarJuego)

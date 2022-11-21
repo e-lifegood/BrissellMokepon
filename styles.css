@@ -121,8 +121,8 @@ input:checked + label {
 
 #mapa {
     border: 3px solid white;
-    height: 300px;
-    width: 500;
+    height: 500px;
+    width: 700;
 }
 
 @media (max-width: 360px) {
