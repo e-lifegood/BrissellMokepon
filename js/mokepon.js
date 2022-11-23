@@ -41,11 +41,12 @@ let victoriasJugador = 0
 let victoriasEnemigo = 0
 let vidasJugador = 3
 let vidasEnemigo = 3
+let pintarKimetsuyi
 let lienzo = mapa.getContext("2d")
 let intervalo 
 let mapaBackground = new Image() 
-mapaBackground.src = "../assets/mapa.jpg"
-
+mapaBackground.src = "../assets/mapa832x432.png" 
+lienzo.scale(2, 1.7)
 class Kimetsu {
     constructor(nombre, foto, vida, fotoMapa, x = 10, y = 10) {
         this.nombre = nombre
@@ -54,8 +55,8 @@ class Kimetsu {
         this.ataques = []
         this.x = x
         this.y = y
-        this.ancho = 30
-        this.alto = 30
+        this.ancho = 40
+        this.alto = 35
         this.mapaFoto = new Image()
         this.mapaFoto.src = fotoMapa
         this.velocidadX = 0
@@ -73,17 +74,17 @@ class Kimetsu {
     }
 }
 
-let tanjiro = new Kimetsu('Tanjiro', './assets/tanjiroV2.png', 5, './assets/tanjiroV2.png')
+let tanjiro = new Kimetsu('Tanjiro', './assets/tanjiro.png', 5, './assets/tanjiro.png')
 
-let inosuke = new Kimetsu('Inosuke', './assets/inosukeV2.png', 5, './assets/inosukeV2.png')
+let inosuke = new Kimetsu('Inosuke', './assets/inosuke.png', 5, './assets/inosuke.png')
 
 let zenitsu = new Kimetsu('Zenitsu', './assets/zenitsuV2.png', 5, './assets/zenitsuV2.png')
 
-let tanjiroEnemigo = new Kimetsu('Tanjiro', './assets/2tanjiro.jpg', 5, './assets/2tanjiro.jpg', 80, 120)
+let tanjiroEnemigo = new Kimetsu('Tanjiro', './assets/tanjiro.png', 5, './assets/tanjiro.png', 30, 50)
 
-let inosukeEnemigo = new Kimetsu('Inosuke', './assets/inosuke.jpg', 5, './assets/inosuke.jpg', 160, 95)
+let inosukeEnemigo = new Kimetsu('Inosuke', './assets/inosuke.png', 5, './assets/inosuke.png', 130, 95)
 
-let zenitsuEnemigo = new Kimetsu('Zenitsu', './assets/zenitsu.jpg', 5, './assets/zenitsu.jpg', 200, 190)
+let zenitsuEnemigo = new Kimetsu('Zenitsu', './assets/zenitsuV2.png', 5, './assets/zenitsuV2.png', 200, 190)
 
 tanjiro.ataques.push(
     { nombre: '💧', id: 'boton-agua' },
@@ -330,7 +331,9 @@ function aleatorio(min, max) {
 function pintarCanva() {
     personajeDelJugador.x = personajeDelJugador.x + personajeDelJugador.velocidadX
     personajeDelJugador.y = personajeDelJugador.y + personajeDelJugador.velocidadY
+
     lienzo.clearRect(0, 0, mapa.width, mapa.height)
+
     lienzo.drawImage(
        mapaBackground,
        0,
@@ -338,6 +341,7 @@ function pintarCanva() {
        mapa.width,
        mapa.height
     )
+
     personajeDelJugador.pintarKimetsuyi()
     tanjiroEnemigo.pintarKimetsuyi()
     zenitsuEnemigo.pintarKimetsuyi()
@@ -402,6 +406,10 @@ function obtenerPersonaje() {
             return kimetsuyis[i]
         }
     }
+}
+
+function revisarColision() {
+
 }
 
 window.addEventListener("load", iniciarJuego)

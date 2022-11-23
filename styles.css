@@ -2,7 +2,7 @@
 
 body {
     font-family: 'Silkscreen';
-    background-color: #0F3460;
+    background-color: #8B7E74;
 }
 
 #secleccionar-personaje {
@@ -121,8 +121,9 @@ input:checked + label {
 
 #mapa {
     border: 3px solid white;
-    height: 500px;
-    width: 700;
+    height: 432px;
+    width: 832px;
+    /*transform: scale(0.5);*/
 }
 
 @media (max-width: 360px) {
