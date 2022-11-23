@@ -73,17 +73,17 @@ class Kimetsu {
     }
 }
 
-let tanjiro = new Kimetsu('Tanjiro', './assets/2tanjiro.jpg', 5)
+let tanjiro = new Kimetsu('Tanjiro', './assets/tanjiroV2.png', 5, './assets/tanjiroV2.png')
 
-let inosuke = new Kimetsu('Inosuke', './assets/inosuke.jpg', 5)
+let inosuke = new Kimetsu('Inosuke', './assets/inosukeV2.png', 5, './assets/inosukeV2.png')
 
-let zenitsu = new Kimetsu('Zenitsu', './assets/zenitsu.jpg', 5)
+let zenitsu = new Kimetsu('Zenitsu', './assets/zenitsuV2.png', 5, './assets/zenitsuV2.png')
 
-let tanjiroEnemigo = new Kimetsu('Tanjiro', './assets/2tanjiro.jpg', 5, 80, 120)
+let tanjiroEnemigo = new Kimetsu('Tanjiro', './assets/2tanjiro.jpg', 5, './assets/2tanjiro.jpg', 80, 120)
 
-let inosukeEnemigo = new Kimetsu('Inosuke', './assets/inosuke.jpg', 5, 160, 95)
+let inosukeEnemigo = new Kimetsu('Inosuke', './assets/inosuke.jpg', 5, './assets/inosuke.jpg', 160, 95)
 
-let zenitsuEnemigo = new Kimetsu('Zenitsu', './assets/zenitsu.jpg', 5, 200, 190)
+let zenitsuEnemigo = new Kimetsu('Zenitsu', './assets/zenitsu.jpg', 5, './assets/zenitsu.jpg', 200, 190)
 
 tanjiro.ataques.push(
     { nombre: '💧', id: 'boton-agua' },
