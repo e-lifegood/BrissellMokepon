@@ -19,6 +19,7 @@ const contenedorAtaques = document.getElementById("contenedorAtaques")
 
 const sectionVerMapa = document.getElementById("ver-mapa")
 const mapa = document.getElementById("mapa")
+const anchoMaximoMapa  = 400
 
 let kimetsuyis = []
 let ataqueJugador = []
@@ -47,16 +48,28 @@ let intervalo
 let mapaBackground = new Image() 
 mapaBackground.src = "../assets/mapa832x432.png" 
 lienzo.scale(2, 1.7)
+let alturaQueBusacamos
+let anchoDelMapa = window.innerWidth - 20
+
+if(anchoDelMapa > anchoMaximoMapa) {
+    anchoDelMapa = anchoMaximoMapa - 20 
+}
+
+alturaQueBusacamos = anchoDelMapa * 600 / 800
+
+mapa.width = anchoDelMapa
+mapa.height = alturaQueBusacamos
+
 class Kimetsu {
-    constructor(nombre, foto, vida, fotoMapa, x = 10, y = 10) {
+    constructor(nombre, foto, vida, fotoMapa) {
         this.nombre = nombre
         this.foto = foto
         this.vida = vida
         this.ataques = []
-        this.x = x
-        this.y = y
-        this.ancho = 40
-        this.alto = 35
+        this.ancho = 30
+        this.alto = 25
+        this.x = aleatorio(0, mapa.width - this.ancho)
+        this.y = aleatorio(0, mapa.height - this.alto)
         this.mapaFoto = new Image()
         this.mapaFoto.src = fotoMapa
         this.velocidadX = 0
@@ -80,13 +93,21 @@ let inosuke = new Kimetsu('Inosuke', './assets/inosuke.png', 5, './assets/inosuk
 
 let zenitsu = new Kimetsu('Zenitsu', './assets/zenitsuV2.png', 5, './assets/zenitsuV2.png')
 
-let tanjiroEnemigo = new Kimetsu('Tanjiro', './assets/tanjiro.png', 5, './assets/tanjiro.png', 30, 50)
+let tanjiroEnemigo = new Kimetsu('Tanjiro', './assets/tanjiro.png', 5, './assets/tanjiro.png')
 
-let inosukeEnemigo = new Kimetsu('Inosuke', './assets/inosuke.png', 5, './assets/inosuke.png', 130, 95)
+let inosukeEnemigo = new Kimetsu('Inosuke', './assets/inosuke.png', 5, './assets/inosuke.png')
 
-let zenitsuEnemigo = new Kimetsu('Zenitsu', './assets/zenitsuV2.png', 5, './assets/zenitsuV2.png', 200, 190)
+let zenitsuEnemigo = new Kimetsu('Zenitsu', './assets/zenitsuV2.png', 5, './assets/zenitsuV2.png')
 
 tanjiro.ataques.push(
+    { nombre: '💧', id: 'boton-agua' },
+    { nombre: '💧', id: 'boton-agua' },
+    { nombre: '💧', id: 'boton-agua' },
+    { nombre: '🔥', id: 'boton-fuego' },
+    { nombre: '🌱', id: 'boton-tierra' }
+)
+
+tanjiroEnemigo.ataques.push(
     { nombre: '💧', id: 'boton-agua' },
     { nombre: '💧', id: 'boton-agua' },
     { nombre: '💧', id: 'boton-agua' },
@@ -102,7 +123,23 @@ inosuke.ataques.push(
     { nombre: '🔥', id: 'boton-fuego' },
 )
 
+inosukeEnemigo.ataques.push(
+    { nombre: '🌱', id: 'boton-tierra' },
+    { nombre: '🌱', id: 'boton-tierra' },
+    { nombre: '🌱', id: 'boton-tierra' },
+    { nombre: '💧', id: 'boton-agua' },
+    { nombre: '🔥', id: 'boton-fuego' },
+)
+
 zenitsu.ataques.push(
+    { nombre: '🔥', id: 'boton-fuego' },
+    { nombre: '🔥', id: 'boton-fuego' },
+    { nombre: '🔥', id: 'boton-fuego' },
+    { nombre: '💧', id: 'boton-agua' },
+    { nombre: '🌱', id: 'boton-tierra' },
+)
+
+zenitsuEnemigo.ataques.push(
     { nombre: '🔥', id: 'boton-fuego' },
     { nombre: '🔥', id: 'boton-fuego' },
     { nombre: '🔥', id: 'boton-fuego' },
@@ -141,8 +178,6 @@ function seleccionarPersonajeJugador() {
 
     sectionSeleccionarPersonaje.style.display = "none"
 
-    //sectionSeleccionarAtaque.style.display = "flex"
-
     if (inpuntTanjiro.checked) {
         spanpersonajeJugador.innerHTML = inpuntTanjiro.id
         prsnJugador = inpuntTanjiro.id
@@ -163,7 +198,6 @@ function seleccionarPersonajeJugador() {
     extraerAtaques(prsnJugador)
     sectionVerMapa.style.display = "flex"
     iniciarMapa()
-    seleccionarPersonajeEnemigo()
 }
 
 function extraerAtaques(prsnJugador) {
@@ -346,6 +380,15 @@ function pintarCanva() {
     tanjiroEnemigo.pintarKimetsuyi()
     zenitsuEnemigo.pintarKimetsuyi()
     inosukeEnemigo.pintarKimetsuyi()
+
+    if(
+        obtenerPersonaje.velocidadX !== 0 || obtenerPersonaje.velocidadY !== 0
+    ) {
+        revisarColision(tanjiroEnemigo)
+        revisarColision(inosukeEnemigo)
+        revisarColision(zenitsuEnemigo)
+
+    }
 }
 
 function moverDerecha() {
@@ -408,8 +451,31 @@ function obtenerPersonaje() {
     }
 }
 
-function revisarColision() {
+function revisarColision(enemigo) {
+    const arribaEnemigo = enemigo.y
+    const abajoEnemigo = enemigo.y + enemigo.alto
+    const derechaEnemigo = enemigo.x + enemigo.ancho
+    const izquierdaEnemigo = enemigo.x
 
+    const arribaPersonaje = obtenerPersonaje.y
+    const abajoPersonaje = obtenerPersonaje.y + obtenerPersonaje.alto
+    const derechaPersonaje = obtenerPersonaje.x + obtenerPersonaje.ancho
+    const izquierdaPersonaje = obtenerPersonaje.x
+
+    if(
+        abajoPersonaje < arribaEnemigo ||
+        arribaPersonaje > abajoEnemigo ||
+        derechaPersonaje < izquierdaEnemigo ||
+        izquierdaPersonaje > derechaEnemigo
+    ) {
+        return
+    }
+
+    detenerMovimiento()
+    clearInterval(intervalo)
+    sectionSeleccionarAtaque.style.display = "flex"
+    sectionVerMapa.style.display = "none"
+    seleccionarPersonajeEnemigo()
 }
 
 window.addEventListener("load", iniciarJuego)
