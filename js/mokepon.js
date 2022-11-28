@@ -66,8 +66,8 @@ class Kimetsu {
         this.foto = foto
         this.vida = vida
         this.ataques = []
-        this.ancho = 30
-        this.alto = 25
+        this.ancho = 45
+        this.alto = 45
         this.x = aleatorio(0, mapa.width - this.ancho)
         this.y = aleatorio(0, mapa.height - this.alto)
         this.mapaFoto = new Image()
@@ -196,8 +196,8 @@ function seleccionarPersonajeJugador() {
     }
 
     extraerAtaques(prsnJugador)
-    sectionVerMapa.style.display = "flex"
     iniciarMapa()
+    sectionVerMapa.style.display = "flex"
 }
 
 function extraerAtaques(prsnJugador) {
@@ -387,7 +387,6 @@ function pintarCanva() {
         revisarColision(tanjiroEnemigo)
         revisarColision(inosukeEnemigo)
         revisarColision(zenitsuEnemigo)
-
     }
 }
 
@@ -409,7 +408,7 @@ function moverArriba() {
 
 function detenerMovimiento() {
     personajeDelJugador.velocidadX = 0
-    personajeDelJugador.velocidadY = 0
+    personajeDelJugador.velocidadY = -0
 }
 
 function presionDeTecla(event) {
@@ -473,8 +472,8 @@ function revisarColision(enemigo) {
 
     detenerMovimiento()
     clearInterval(intervalo)
-    sectionSeleccionarAtaque.style.display = "flex"
-    sectionVerMapa.style.display = "none"
+    sectionSeleccionarAtaque.style.display = "none"
+    sectionVerMapa.style.display = "flex"
     seleccionarPersonajeEnemigo()
 }
 
