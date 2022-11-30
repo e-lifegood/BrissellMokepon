@@ -21,6 +21,7 @@ const sectionVerMapa = document.getElementById("ver-mapa")
 const mapa = document.getElementById("mapa")
 const anchoMaximoMapa  = 400
 
+let jugadorId = null
 let kimetsuyis = []
 let ataqueJugador = []
 let ataqueEnemigo = []
@@ -172,6 +173,21 @@ function iniciarJuego() {
     botonPersonajeJugador.addEventListener("click", seleccionarPersonajeJugador)    
     
     botonReiniciar.addEventListener("click", reiniciarJuego)
+
+    unirseAlJuego()
+}
+
+function unirseAlJuego() {
+    fetch("http://localhost:8080/unirse")
+        .then(function (res) {
+            if (res.ok) {
+                res.text() 
+                    .then(function (respuesta) {
+                    console.log(respuesta)
+                    jugadorId = respuesta
+                })
+            }
+        })
 }
 
 function seleccionarPersonajeJugador() {    
@@ -195,9 +211,23 @@ function seleccionarPersonajeJugador() {
         return false;
     }
 
+    seleccionarKimetsu(prsnJugador)
+
     extraerAtaques(prsnJugador)
     iniciarMapa()
     sectionVerMapa.style.display = "flex"
+}
+
+function seleccionarKimetsu(prsnJugador) {
+    fetch(`http://localhost:8080/kimetsu/${jugadorId}`, {
+        method: "post",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            kimetsu: prsnJugador
+        })
+    })
 }
 
 function extraerAtaques(prsnJugador) {
