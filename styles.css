@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Silkscreen&display=swap');
+
+body {
+    font-family: 'Abril Fatface', cursive;
+    background-color: #F0D9FF;
+}
+
+#seleccionar-personaje {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.titulo {
+    color: #A084DC;
+    font-size: 50px;
+    margin: 0px;
+}
+
+.subtitulo {
+    color: #A084DC;
+    font-size: 35px;
+}
+
+.tarjetas, .tarjetas-ataques {
+    display: flex;
+    gap: 10px;
+}
+
+.tarjeta-de-kimetsu {
+    width: 320px;
+    height: 320px;
+    background: #E3ACF9;
+    padding: 14px;
+    box-sizing: border-box;
+    margin-top: 20px;
+    border: 2px solid;
+    border-radius: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tarjeta-de-kimetsu img {
+    width: 150px;
+}
+
+#boton-personaje {
+    width: 180px;
+    height: 40px;
+    border-radius: 20px;
+    background: transparent;
+    border: 2px solid;
+    margin-top: 10px;
+}
+
+input {
+   display: none;
+}
+
+input:checked + label {
+    background-color: #C780FA;
+}
+
+#seleccionar-ataque {
+    flex-direction: column;
+    align-items: center;
+}
+
+.boton-de-ataque {
+    background: #F3F1F5;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 15px;
+    border-color:  transparent;
+    width: 70px;
+    margin: 2px;
+}
+
+#mensajes {
+    width: 260px;
+    background-color: #9873B9;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 12px;
+    color: #F5EBE0;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+#boton-reiniciar {
+    font-family: 'Abril Fatface', cursive;
+    background-color: #9873B9;
+    border: none;
+    color: white;
+}
+
+.ataques {
+    display: grid;
+    grid-template-columns: 100px 100px;
+}
+
+.ataques-jugador, .ataques-enemigo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+@media (max-width: 380px) {
+    .tarjetas, .tarjetas-ataques {
+        flex-direction: column;
+    }
+}
