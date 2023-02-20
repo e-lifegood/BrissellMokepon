@@ -19,6 +19,9 @@ const ataquesDelEnemigo = document.getElementById('ataques-del-enemigo')
 const contenedorTarjetas = document.getElementById('contenedor-tarjetas')
 const contenedorAtaques = document.getElementById('contenedor-ataques')
 
+const sectionVerMapa = document.getElementById('ver-mapa')
+const mapa = document.getElementById('mapa')
+
 let kimetsuyis = []
 let ataqueJugador = []
 let ataqueEnemigo = []
@@ -39,6 +42,8 @@ let victoriasJugador = 0
 let victoriasEnemigo = 0
 let vidasJugador = 3
 let vidasEnemigo = 3
+let lienzo = mapa.getContext("2d")
+let intervalo
 
 class Kimetsu {
     constructor(nombre, foto, vida) {
@@ -46,6 +51,14 @@ class Kimetsu {
         this.foto = foto
         this.vida = vida
         this.ataques = []
+        this.x = 20
+        this.y = 40
+        this.ancho = 100 
+        this.alto = 100
+        this.mapaFoto = new Image()
+        this.mapaFoto.src = foto
+        this.velocidadX = 0
+        this.velocidadY = 0
     }
 }
 
@@ -84,6 +97,7 @@ kimetsuyis.push(tanjiro, inosuke, zenitsu)
 function iniciarJuego() {
 
     sectionSeleccionarAtaque.style.display = 'none'    
+    sectionVerMapa.style.display = 'none'
 
     kimetsuyis.forEach((kimetsu) => {
         opcionDeKimetsuyis = `
@@ -108,7 +122,9 @@ function iniciarJuego() {
 function seleccionarPersonajeJugador() {
     
     sectionSeleccionarPersonaje.style.display = 'none'
-    sectionSeleccionarAtaque.style.display = 'flex'
+    //sectionSeleccionarAtaque.style.display = 'flex'
+    sectionVerMapa.style.display = 'flex'
+    iniciarMapa()
 
     if (inputTanjiro.checked) {
         spanPersonajeJugador.innerHTML = inputTanjiro.id
@@ -292,5 +308,67 @@ function reiniciarJuego() {
 function aleatorio( min, max) {
     return  Math.floor(Math.random() * (max - min + 1) + min) 
 }
+
+function pintarPersonaje() {
+    tanjiro.x = tanjiro.x + tanjiro.velocidadX
+    tanjiro.y = tanjiro.y + tanjiro.velocidadY
+    lienzo.clearRect(0, 0, mapa.width, mapa.height)
+    lienzo.drawImage(
+        tanjiro.mapaFoto,
+        tanjiro.x,
+        tanjiro.y,
+        tanjiro.ancho,
+        tanjiro.alto
+    )
+}
+
+function moverDerecha() {
+    tanjiro.velocidadX = 5
+}
+
+function moverIzquierda() {
+    tanjiro.velocidadX = -5
+}
+
+function moverAbajo() {
+    tanjiro.velocidadY = 5
+}
+
+function moverArriba() {
+    tanjiro.velocidadY = -5
+}
+
+function detenerMovimiento() {
+    tanjiro.velocidadX = 0
+    tanjiro.velocidadY = 0
+}
+
+function sePresionoUnaTecla(event) {
+    switch (event.key) {
+        case 'ArrowUp':
+            moverArriba()
+            break
+        case 'ArrowDown':
+            moverAbajo() 
+            break
+        case 'ArrowLeft':
+            moverIzquierda()
+            break
+        case 'ArrowRight':
+            moverDerecha()
+            break
+        default:
+            break
+    }
+}
+
+function iniciarMapa() {
+    intervalo = setInterval(pintarPersonaje, 50)
+
+    window.addEventListener('keydown', sePresionoUnaTecla)
+
+    window.addEventListener('keyup', detenerMovimiento)
+}
+
 
 window.addEventListener('load', iniciarJuego)
