@@ -30,6 +30,7 @@ let inputTanjiro
 let inputInosuke
 let inputZenitsu
 let personajeJugador
+let personajeJugadorObjeto
 let ataquesKimetsuyis
 let ataqueKimetsuyiEnemigo
 let botonFuego
@@ -44,29 +45,47 @@ let vidasJugador = 3
 let vidasEnemigo = 3
 let lienzo = mapa.getContext("2d")
 let intervalo
+let mapaBackground = new Image()
+mapaBackground.src = './assets/mapaV2.jpg'
 
 class Kimetsu {
-    constructor(nombre, foto, vida) {
+    constructor(nombre, foto, vida, fotoMapa, x = 10, y = 10) {
         this.nombre = nombre
         this.foto = foto
         this.vida = vida
         this.ataques = []
-        this.x = 20
-        this.y = 40
-        this.ancho = 100 
-        this.alto = 100
+        this.x = x
+        this.y = y
+        this.ancho = 70 
+        this.alto = 80
         this.mapaFoto = new Image()
-        this.mapaFoto.src = foto
+        this.mapaFoto.src = fotoMapa
         this.velocidadX = 0
         this.velocidadY = 0
     }
+
+    pintarKimetsuyi() {
+        lienzo.drawImage(
+            this.mapaFoto,
+            this.x,
+            this.y,
+            this.ancho,
+            this.alto
+        )
+    }
 }
 
-let tanjiro = new Kimetsu('Tanjiro', './assets/tanjiro.png', 5)
+let tanjiro = new Kimetsu('Tanjiro', './assets/tanjiro.png', 5, './assets/TCABEZA.png')
 
-let inosuke = new Kimetsu('Inosuke', './assets/inosuke.png', 5)
+let inosuke = new Kimetsu('Inosuke', './assets/inosuke.png', 5, './assets/ICABEZA.png')
 
-let zenitsu = new Kimetsu('Zenitsu', './assets/zenitsu.png', 5)
+let zenitsu = new Kimetsu('Zenitsu', './assets/zenitsu.png', 5, './assets/ZCABAEZA2.png')
+
+let tanjiroEnemigo = new Kimetsu('Tanjiro', './assets/tanjiro.png', 5, './assets/TCABEZA.png', 90, 120)
+
+let inosukeEnemigo = new Kimetsu('Inosuke', './assets/inosuke.png', 5, './assets/ICABEZA.png', 280, 40)
+
+let zenitsuEnemigo = new Kimetsu('Zenitsu', './assets/zenitsu.png', 5, './assets/ZCABAEZA2.png', 210, 195)
 
 tanjiro.ataques.push(
     {nombre: '💧', id: 'boton-agua'},
@@ -123,8 +142,6 @@ function seleccionarPersonajeJugador() {
     
     sectionSeleccionarPersonaje.style.display = 'none'
     //sectionSeleccionarAtaque.style.display = 'flex'
-    sectionVerMapa.style.display = 'flex'
-    iniciarMapa()
 
     if (inputTanjiro.checked) {
         spanPersonajeJugador.innerHTML = inputTanjiro.id
@@ -143,6 +160,8 @@ function seleccionarPersonajeJugador() {
     }
 
     extraerAtaques(personajeJugador)
+    sectionVerMapa.style.display = 'flex'
+    iniciarMapa()
     seleccionarPersonajeEnemigo()
 }
 
@@ -309,38 +328,43 @@ function aleatorio( min, max) {
     return  Math.floor(Math.random() * (max - min + 1) + min) 
 }
 
-function pintarPersonaje() {
-    tanjiro.x = tanjiro.x + tanjiro.velocidadX
-    tanjiro.y = tanjiro.y + tanjiro.velocidadY
+function pintarCanva() {
+
+    personajeJugadorObjeto.x = personajeJugadorObjeto.x + personajeJugadorObjeto.velocidadX
+    personajeJugadorObjeto.y = personajeJugadorObjeto.y + personajeJugadorObjeto.velocidadY
     lienzo.clearRect(0, 0, mapa.width, mapa.height)
     lienzo.drawImage(
-        tanjiro.mapaFoto,
-        tanjiro.x,
-        tanjiro.y,
-        tanjiro.ancho,
-        tanjiro.alto
+        mapaBackground,
+        0,
+        0,
+        mapa.width,
+        mapa.height
     )
+    personajeJugadorObjeto.pintarKimetsuyi()
+    tanjiroEnemigo.pintarKimetsuyi()
+    inosukeEnemigo.pintarKimetsuyi()
+    zenitsuEnemigo.pintarKimetsuyi()
 }
 
 function moverDerecha() {
-    tanjiro.velocidadX = 5
+    personajeJugadorObjeto.velocidadX = 5
 }
 
 function moverIzquierda() {
-    tanjiro.velocidadX = -5
+    personajeJugadorObjeto.velocidadX = -5
 }
 
 function moverAbajo() {
-    tanjiro.velocidadY = 5
+    personajeJugadorObjeto.velocidadY = 5
 }
 
 function moverArriba() {
-    tanjiro.velocidadY = -5
+    personajeJugadorObjeto.velocidadY = -5
 }
 
 function detenerMovimiento() {
-    tanjiro.velocidadX = 0
-    tanjiro.velocidadY = 0
+    personajeJugadorObjeto.velocidadX = 0
+    personajeJugadorObjeto.velocidadY = 0
 }
 
 function sePresionoUnaTecla(event) {
@@ -363,12 +387,22 @@ function sePresionoUnaTecla(event) {
 }
 
 function iniciarMapa() {
-    intervalo = setInterval(pintarPersonaje, 50)
+    mapa.width = 700
+    mapa.height = 500
+    personajeJugadorObjeto = obtenerObjetosPersonajes(personajeJugador)
+    intervalo = setInterval(pintarCanva, 50)
 
     window.addEventListener('keydown', sePresionoUnaTecla)
 
     window.addEventListener('keyup', detenerMovimiento)
 }
 
+function obtenerObjetosPersonajes() {
+    for (let i = 0; i < kimetsuyis.length; i++) {
+        if (personajeJugador === kimetsuyis[i].nombre) {
+                return kimetsuyis[i]
+        }
+    }
+}
 
 window.addEventListener('load', iniciarJuego)
