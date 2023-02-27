@@ -22,6 +22,7 @@ const contenedorAtaques = document.getElementById('contenedor-ataques')
 const sectionVerMapa = document.getElementById('ver-mapa')
 const mapa = document.getElementById('mapa')
 
+let jugadorId = null
 let kimetsuyis = []
 let ataqueJugador = []
 let ataqueEnemigo = []
@@ -173,6 +174,21 @@ function iniciarJuego() {
     botonPersonajeJugador.addEventListener('click', seleccionarPersonajeJugador)
         
     botonReiniciar.addEventListener('click', reiniciarJuego)
+
+    unirseAlJuego()
+}
+
+function unirseAlJuego() {
+    fetch("http://localhost:8080/unirse")  
+        .then(function (res) {
+            if (res.ok) {
+                res.text()
+                    .then(function (respuesta) {
+                        console.log(respuesta)
+                        jugadorId = respuesta
+                    })
+            }
+        })
 }
 
 function seleccionarPersonajeJugador() {
@@ -195,9 +211,23 @@ function seleccionarPersonajeJugador() {
         alert('Selecciona un personaje ._.')
     }
 
+    seleccionarKimetsu(personajeJugador)
+
     extraerAtaques(personajeJugador)
     sectionVerMapa.style.display = 'flex'
     iniciarMapa()
+}
+
+function seleccionarKimetsu(personajeJugador) {
+    fetch(`http://localhost:8080/kimetsu/${jugadorId}`, {
+        method: "post",
+        headers: {
+            "Content-Type": "aplication/json"
+        },
+        body: JSON.stringify({
+            kimetsu: personajeJugador
+        })
+    })
 }
 
 function extraerAtaques(personajeJugador) {
