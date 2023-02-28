@@ -63,7 +63,8 @@ mapa.width = anchoDelMapa
 mapa.height = alturaQueBuscamos
 
 class Kimetsu {
-    constructor(nombre, foto, vida, fotoMapa) {
+    constructor(nombre, foto, vida, fotoMapa, id = null) {
+        this.id = id
         this.nombre = nombre
         this.foto = foto
         this.vida = vida
@@ -95,59 +96,35 @@ let inosuke = new Kimetsu('Inosuke', './assets/inosuke.png', 5, './assets/ICABEZ
 
 let zenitsu = new Kimetsu('Zenitsu', './assets/zenitsu.png', 5, './assets/ZCABAEZA2.png')
 
-let tanjiroEnemigo = new Kimetsu('Tanjiro', './assets/tanjiro.png', 5, './assets/TCABEZA.png')
-
-let inosukeEnemigo = new Kimetsu('Inosuke', './assets/inosuke.png', 5, './assets/ICABEZA.png')
-
-let zenitsuEnemigo = new Kimetsu('Zenitsu', './assets/zenitsu.png', 5, './assets/ZCABAEZA2.png')
-
-tanjiro.ataques.push(
+const TANJIRO_ATAQUES = [
     {nombre: '💧', id: 'boton-agua'},
     {nombre: '💧', id: 'boton-agua'},
     {nombre: '💧', id: 'boton-agua'},
     {nombre: '🔥', id: 'boton-fuego'},
     {nombre: '🌱', id: 'boton-tierra'}
-)
+]
 
-tanjiroEnemigo.ataques.push(
-    {nombre: '💧', id: 'boton-agua'},
-    {nombre: '💧', id: 'boton-agua'},
-    {nombre: '💧', id: 'boton-agua'},
-    {nombre: '🔥', id: 'boton-fuego'},
-    {nombre: '🌱', id: 'boton-tierra'}
-)
+tanjiro.ataques.push(...TANJIRO_ATAQUES)
 
-inosuke.ataques.push(
+const INOSUKE_ATAQUES = [
     {nombre: '🔥', id: 'boton-fuego'},
     {nombre: '🔥', id: 'boton-fuego'},
     {nombre: '🔥', id: 'boton-fuego'},
     {nombre: '💧', id: 'boton-agua'},
     {nombre: '🌱', id: 'boton-tierra'}
-)
+]
 
-inosukeEnemigo.ataques.push(
-    {nombre: '🔥', id: 'boton-fuego'},
-    {nombre: '🔥', id: 'boton-fuego'},
-    {nombre: '🔥', id: 'boton-fuego'},
-    {nombre: '💧', id: 'boton-agua'},
-    {nombre: '🌱', id: 'boton-tierra'}
-)
+inosuke.ataques.push(...INOSUKE_ATAQUES)
 
-zenitsu.ataques.push(
+const ZENITSU_ATAQUES = [
     {nombre: '🌱', id: 'boton-tierra'},
     {nombre: '🌱', id: 'boton-tierra'},
     {nombre: '🌱', id: 'boton-tierra'},
     {nombre: '💧', id: 'boton-agua'},
     {nombre: '🔥', id: 'boton-fuego'}
-)
+]
 
-zenitsuEnemigo.ataques.push(
-    {nombre: '🌱', id: 'boton-tierra'},
-    {nombre: '🌱', id: 'boton-tierra'},
-    {nombre: '🌱', id: 'boton-tierra'},
-    {nombre: '💧', id: 'boton-agua'},
-    {nombre: '🔥', id: 'boton-fuego'}
-)
+zenitsu.ataques.push(...INOSUKE_ATAQUES)
 
 kimetsuyis.push(tanjiro, inosuke, zenitsu)
 
@@ -222,7 +199,7 @@ function seleccionarKimetsu(personajeJugador) {
     fetch(`http://localhost:8080/kimetsu/${jugadorId}`, {
         method: "post",
         headers: {
-            "Content-Type": "aplication/json"
+            "Content-Type": "application/json"
         },
         body: JSON.stringify({
             kimetsu: personajeJugador
@@ -405,6 +382,9 @@ function pintarCanva() {
         mapa.height
     )
     personajeJugadorObjeto.pintarKimetsuyi()
+
+    enviarPosicion(personajeJugadorObjeto.x, personajeJugadorObjeto.y)
+
     tanjiroEnemigo.pintarKimetsuyi()
     inosukeEnemigo.pintarKimetsuyi()
     zenitsuEnemigo.pintarKimetsuyi()
@@ -414,6 +394,45 @@ function pintarCanva() {
         revisarColision(inosukeEnemigo)
         revisarColision(zenitsuEnemigo)
     }
+}
+
+function enviarPosicion(x, y) {
+    fetch(`http://localhost:8080/kimetsu/${jugadorId}/posicion`, {
+        method: "post",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            x,
+            y
+        })
+    })
+    .then(function (res) {
+        if (res.ok) {
+            res.json()
+                .then(function ({ enemigos }) {
+                    console.log(enemigos)
+                    enemigos.forEach(function (enemigo) {
+                        let kimetsuEnemigo = null 
+                        const kimetsuNombre = enemigo.kimetsu.nombre || ""
+                        if (kimetsuNombre === "Tanjiro") {
+                           kimetsuEnemigo = new Kimetsu('Tanjiro', './assets/tanjiro.png', 5, './assets/TCABEZA.png')
+                        }
+                        else if (kimetsuNombre === "Inosuke") {
+                            kimetsuEnemigo = new Kimetsu('Inosuke', './assets/inosuke.png', 5, './assets/ICABEZA.png')
+                        }
+                        else if (kimetsuNombre === "Zenitsu") {
+                            kimetsuEnemigo = new Kimetsu('Zenitsu', './assets/zenitsu.png', 5, './assets/ZCABAEZA2.png')
+                        }
+
+                        kimetsuEnemigo.x = enemigo.x
+                        kimetsuEnemigo.y = enemigo.y
+
+                        kimetsuEnemigo.pintarKimetsuyi()
+                    })
+                })
+        }
+    })
 }
 
 function moverDerecha() {
