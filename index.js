@@ -21,6 +21,10 @@ class Jugador {
         this.x = x
         this.y = y
     }
+
+    asignarAtaques(ataques) {
+        this.ataques = ataques
+    }
 }
 
 class Kimetsu {
@@ -72,6 +76,28 @@ app.post("/kimetsu/:jugadorId/posicion", (req, res) => {
 
     res.send({
         enemigos
+    })
+})
+
+app.post("/kimetsu/:jugadorId/ataques", (req, res) => {
+    const jugadorId = req.params.jugadorId || ""
+    const ataques = req.body.ataques || []
+    const kimetsu = new Kimetsu(nombre)
+
+    const jugadorIndex = jugadores.findIndex((jugador) => jugadorId === jugador.id)
+
+    if (jugadorIndex >= 0) {
+        jugadores[jugadorIndex].asignarAtaques(ataques)
+    }
+
+    res.end()
+})
+
+app.get("/kimetsu/:jugadorId/ataques", (req, res) => {
+    const jugadorId = req.params.jugadorId || ""
+    const jugador = jugadores.find((jugador) => jugador.id === jugadorId)
+    res.send({
+        ataques: jugador.ataques || []
     })
 })
 

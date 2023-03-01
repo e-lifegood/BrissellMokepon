@@ -23,7 +23,9 @@ const sectionVerMapa = document.getElementById('ver-mapa')
 const mapa = document.getElementById('mapa')
 
 let jugadorId = null
+let enemigoId = null
 let kimetsuyis = []
+let kimetsuyisEnemigos = []
 let ataqueJugador = []
 let ataqueEnemigo = []
 let opcionDeKimetsuyis
@@ -254,9 +256,41 @@ function secuenciaAtaque() {
                 boton.style.background = '#C3ACD0'
                 boton.disabled = true
             }
-            ataqueAleatorioEnemigo()
+
+            if (ataqueJugador.length === 5) {
+                enviarAtaques()
+            }
         })
     })
+}
+
+function enviarAtaques() {
+    fetch(`http://localhost:8080/kimetsu/${jugadorId}/ataques`, {
+        method: "post",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            ataques: ataqueJugador
+        })
+    })
+
+    intervalo = setInterval(obtenerAtaques, 50)
+}
+
+function obtenerAtaques() {
+    fetch(`http://localhost:8080/kimetsu/${enemigoId}/ataques`)
+        .then(function (res) {
+            if (res.ok) {
+                res.json()
+                    .then(function ({ ataques }) {
+                        if (ataques.length === 5) {
+                            ataqueEnemigo = ataques
+                            combate()
+                        }
+                    })
+            }
+        })
 }
 
 function seleccionarPersonajeEnemigo() {
@@ -297,6 +331,7 @@ function indexAmbosOponentes(jugador, enemigo) {
 }
 
 function combate() {
+    clearInterval(intervalo)
 
     for (let index = 0; index < ataqueJugador.length; index++) {
         if (ataqueJugador[index] === ataqueEnemigo[index]) {
@@ -385,15 +420,10 @@ function pintarCanva() {
 
     enviarPosicion(personajeJugadorObjeto.x, personajeJugadorObjeto.y)
 
-    tanjiroEnemigo.pintarKimetsuyi()
-    inosukeEnemigo.pintarKimetsuyi()
-    zenitsuEnemigo.pintarKimetsuyi()
-
-    if (personajeJugadorObjeto.velocidadX !== 0 || personajeJugadorObjeto.velocidadY !== 0) {
-        revisarColision(tanjiroEnemigo)
-        revisarColision(inosukeEnemigo)
-        revisarColision(zenitsuEnemigo)
-    }
+    kimetsuyisEnemigos.forEach(function (kimetsu) {
+        kimetsu.pintarKimetsuyi()
+        revisarColision(kimetsu)
+    })
 }
 
 function enviarPosicion(x, y) {
@@ -412,23 +442,23 @@ function enviarPosicion(x, y) {
             res.json()
                 .then(function ({ enemigos }) {
                     console.log(enemigos)
-                    enemigos.forEach(function (enemigo) {
+                    kimetsuyisEnemigos = enemigos.map(function (enemigo) {
                         let kimetsuEnemigo = null 
                         const kimetsuNombre = enemigo.kimetsu.nombre || ""
                         if (kimetsuNombre === "Tanjiro") {
-                           kimetsuEnemigo = new Kimetsu('Tanjiro', './assets/tanjiro.png', 5, './assets/TCABEZA.png')
+                           kimetsuEnemigo = new Kimetsu('Tanjiro', './assets/tanjiro.png', 5, './assets/TCABEZA.png', enemigo.id)
                         }
                         else if (kimetsuNombre === "Inosuke") {
-                            kimetsuEnemigo = new Kimetsu('Inosuke', './assets/inosuke.png', 5, './assets/ICABEZA.png')
+                            kimetsuEnemigo = new Kimetsu('Inosuke', './assets/inosuke.png', 5, './assets/ICABEZA.png', enemigo.id)
                         }
                         else if (kimetsuNombre === "Zenitsu") {
-                            kimetsuEnemigo = new Kimetsu('Zenitsu', './assets/zenitsu.png', 5, './assets/ZCABAEZA2.png')
+                            kimetsuEnemigo = new Kimetsu('Zenitsu', './assets/zenitsu.png', 5, './assets/ZCABAEZA2.png', enemigo.id)
                         }
 
                         kimetsuEnemigo.x = enemigo.x
                         kimetsuEnemigo.y = enemigo.y
 
-                        kimetsuEnemigo.pintarKimetsuyi()
+                        return kimetsuEnemigo
                     })
                 })
         }
@@ -514,6 +544,9 @@ function revisarColision(enemigo) {
 
     detenerMovimiento()
     clearInterval(intervalo)
+
+    enemigoId = enemigo.id
+
     sectionSeleccionarAtaque.style.display = 'flex'
     sectionVerMapa.style.display = 'none'
     seleccionarPersonajeEnemigo(enemigo)
